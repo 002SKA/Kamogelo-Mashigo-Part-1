@@ -126,7 +126,7 @@ public class userLoginTest {
     public void testGetUsername() {
         System.out.println("getUsername");
         userLogin instance = new userLogin();
-        String expResult = "";
+        String expResult = "Kyl_1";
         String result = instance.getUsername();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -140,7 +140,7 @@ public class userLoginTest {
     public void testGetPassword() {
         System.out.println("getPassword");
         userLogin instance = new userLogin();
-        String expResult = "";
+        String expResult = "Ch&&sec@ke99!";
         String result = instance.getPassword();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -154,7 +154,7 @@ public class userLoginTest {
     public void testGetCellnumber() {
         System.out.println("getCellnumber");
         userLogin instance = new userLogin();
-        String expResult = "";
+        String expResult = "+27838968796";
         String result = instance.getCellnumber();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
