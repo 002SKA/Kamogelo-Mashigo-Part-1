@@ -4,12 +4,12 @@
  */
 package chatapplication;
 
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
 
 public class userLogin {
     
-    // User details fields
+    // User fields
     private String username;
     private String password;
     private String firstName;
@@ -17,122 +17,103 @@ public class userLogin {
     private String cellNumber;
     private boolean isRegistered = false;
 
-    // Scanner object for reading input from console
-    private final Scanner scanner = new Scanner(System.in);
-
-    // Method to validate username
-    // Username must contain an underscore and be no longer than 5 characters
+    // Method to validate username format
+    // Must contain underscore and be ≤ 10 characters
     public boolean checkUserName() {
-        return username.contains("_") && username.length() <= 5;
+        return username.contains("_") && username.length() <=10;
     }
 
-    // Method to validate password
-    // Password must be at least 8 characters, contain one uppercase, one digit, and one special character
+    // Method to validate password complexity
+    // Must be at least 8 chars, with uppercase, number and special character
     public boolean checkPasswordComplexity() {
         String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#^&+=!$%*?])[A-Za-z\\d@#^&+=!$%*?]{8,}$";
         return Pattern.matches(regex, password);
     }
 
-    // Method to validate phone number format
-    // Cell number should start with '+' followed by country code and 10 digits
+    // Method to validate international phone number (e.g. +27761234567)
     public boolean checkCellPhoneNumber() {
         String regex = "^\\+\\d{1,3}\\d{10}$";
         return Pattern.matches(regex, cellNumber);
     }
 
-    // Method to register a new user using console input
+    // Register a user using JOptionPane
     public String registerUser() {
-        // Prompt for first name
-        System.out.print("Enter your first name: ");
-        firstName = scanner.nextLine();
-        if (firstName.trim().isEmpty()) return "Registration cancelled.";
+        // First name
+        firstName = JOptionPane.showInputDialog(null, "Enter your first name:", "Registration", JOptionPane.PLAIN_MESSAGE);
+        if (firstName == null || firstName.trim().isEmpty()) return "Registration cancelled.";
 
-        // Prompt for last name
-        System.out.print("Enter your last name: ");
-        lastName = scanner.nextLine();
-        if (lastName.trim().isEmpty()) return "Registration cancelled.";
+        // Last name
+        lastName = JOptionPane.showInputDialog(null, "Enter your last name:", "Registration", JOptionPane.PLAIN_MESSAGE);
+        if (lastName == null || lastName.trim().isEmpty()) return "Registration cancelled.";
 
-        // Prompt for username
-        System.out.print("Enter username (must contain '_' and be ≤ 5 characters): ");
-        username = scanner.nextLine();
-        if (username.trim().isEmpty()) return "Registration cancelled.";
+        // Username
+        username = JOptionPane.showInputDialog(null, "Enter username (must contain '_' and be ≤ 10 characters):", "Registration", JOptionPane.PLAIN_MESSAGE);
+        if (username == null || username.trim().isEmpty()) return "Registration cancelled.";
 
-        // Prompt for password
-        System.out.print("Enter password (min 8 chars, capital letter, number, special char): ");
-        password = scanner.nextLine();
-        if (password.trim().isEmpty()) return "Registration cancelled.";
+        // Password
+        password = JOptionPane.showInputDialog(null, "Enter password (min 8 chars, capital letter, number, special char):", "Registration", JOptionPane.PLAIN_MESSAGE);
+        if (password == null || password.trim().isEmpty()) return "Registration cancelled.";
 
-        // Prompt for cell number
-        System.out.print("Enter cell phone number (e.g., +27607126325): ");
-        cellNumber = scanner.nextLine();
-        if (cellNumber.trim().isEmpty()) return "Registration cancelled.";
+        // Cell number
+        cellNumber = JOptionPane.showInputDialog(null, "Enter cell phone number (e.g. +27761234567):", "Registration", JOptionPane.PLAIN_MESSAGE);
+        if (cellNumber == null || cellNumber.trim().isEmpty()) return "Registration cancelled.";
 
-        // Validate inputs
-        if (!checkUserName()) {
-            System.out.println("Username is not correctly formatted. It must contain an underscore and be no more than five characters.");
+        // Validation
+        boolean validUsername = checkUserName();
+        boolean validPassword = checkPasswordComplexity();
+        boolean validCell = checkCellPhoneNumber();
+
+        if (!validUsername) {
+            JOptionPane.showMessageDialog(null, "Username must contain '_' and be no more than 5 characters.", "Error", JOptionPane.ERROR_MESSAGE);
             return "Username format incorrect.";
         }
 
-        if (!checkPasswordComplexity()) {
-            System.out.println("Password is not correctly formatted. It must contain at least eight characters, a capital letter, a number, and a special character.");
+        if (!validPassword) {
+            JOptionPane.showMessageDialog(null, "Password must have 8+ characters, a capital letter, a number, and a special character.", "Error", JOptionPane.ERROR_MESSAGE);
             return "Password format incorrect.";
         }
 
-        if (!checkCellPhoneNumber()) {
-            System.out.println("Cell number format is incorrect. It must start with an international code followed by 10 digits.");
+        if (!validCell) {
+            JOptionPane.showMessageDialog(null, "Cell number must include international code and 10 digits (e.g. +27761234567).", "Error", JOptionPane.ERROR_MESSAGE);
             return "Cell number format incorrect.";
         }
 
-        // All inputs valid, user registered
         isRegistered = true;
-        System.out.println("Username successfully captured.");
-        System.out.println("Password successfully captured.");
-        System.out.println("Cell phone number successfully added.");
-        System.out.println("User registered successfully.");
+        JOptionPane.showMessageDialog(null, "Username, password and cell number captured successfully!\nUser registered successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         return "Registration successful!";
     }
 
-    // Method to allow user login using console input
+    // Login the user using JOptionPane
     public boolean loginUser() {
-        // Prompt for username and password
-        System.out.print("Enter username: ");
-        String enteredUsername = scanner.nextLine();
+        String enteredUsername = JOptionPane.showInputDialog(null, "Enter username:", "Login", JOptionPane.PLAIN_MESSAGE);
+        if (enteredUsername == null) return false;
 
-        System.out.print("Enter password: ");
-        String enteredPassword = scanner.nextLine();
+        String enteredPassword = JOptionPane.showInputDialog(null, "Enter password:", "Login", JOptionPane.PLAIN_MESSAGE);
+        if (enteredPassword == null) return false;
 
-        // Check credentials
         return enteredUsername.equals(username) && enteredPassword.equals(password);
     }
 
-    // Display login result message
+    // Show login result using JOptionPane
     public void returnLoginStatus(boolean loginStatus) {
         if (loginStatus) {
-            System.out.println("Welcome " + firstName + " " + lastName + ", it is great to see you again.");
+            JOptionPane.showMessageDialog(null, "Welcome " + firstName + " " + lastName + ", it is great to see you again.", "Login Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            System.out.println("Username or password incorrect, please try again.");
+            JOptionPane.showMessageDialog(null, "Username or password incorrect, please try again.", "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Getters for testing or accessing private fields
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getCellnumber() {
-        return cellNumber;
-    }
-
-    public boolean isRegistered() {
-        return isRegistered;
-    }
+    // Getters
+    public String getUsername() 
+    { return username; }
+    
+    public String getPassword() 
+    { return password; }
+    
+    public String getCellnumber() 
+    { return cellNumber; }
+    
+    public boolean isRegistered() 
+    { return isRegistered; }
+    
 }
-    
-
-   
-    
-

@@ -4,37 +4,84 @@
  */
 package chatapplication;
 
-import java.util.Scanner;
+import javax.swing.*;
+import java.util.*;
 
 
 public class ChatApplication {
-
+  
+    private static int messageCount = 0;
    
     public static void main(String[] args) {
-        
- Scanner scanner = new Scanner(System.in); // Scanner for any needed input
-        userLogin login = new userLogin(); // Create login object
+      userLogin login = new userLogin();
 
         // Welcome message
-        System.out.println("==================================");
-        System.out.println(" Welcome to the registration system");
-        System.out.println("==================================");
+        JOptionPane.showMessageDialog(null, "Welcome to the registration system", "Welcome", JOptionPane.INFORMATION_MESSAGE);
 
-        // Registration process
+        // Registration
         String registrationResults = login.registerUser();
-        System.out.println(registrationResults); // Show registration result
 
-        // If registration successful, proceed to login
         if (login.isRegistered()) {
-            boolean loginStatus = login.loginUser(); // Login process
-            login.returnLoginStatus(loginStatus);    // Display login message
+            boolean loginStatus = login.loginUser();
+            login.returnLoginStatus(loginStatus);
+
+            if (loginStatus) {
+                JOptionPane.showMessageDialog(null, "Welcome to QuickChat!", "Chat Ready", JOptionPane.INFORMATION_MESSAGE);
+
+                // Ask number of messages to send
+                int totalMessages = Integer.parseInt(JOptionPane.showInputDialog("How many messages would you like to send?"));
+                StringBuilder summary = new StringBuilder("Summary of messages:\n");
+
+                for (int i = 0; i < totalMessages; i++) {
+                    String recipient = JOptionPane.showInputDialog("Enter recipient number (e.g., +27712345678):");
+                    if (!recipient.matches("^\\+\\d{1,3}\\d{10}$")) {
+                        JOptionPane.showMessageDialog(null, "Invalid recipient number. Must include international code and 10 digits.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+
+                    String message = JOptionPane.showInputDialog("Enter your message (max 250 characters):");
+
+                    if (message.length() > 250) {
+                        JOptionPane.showMessageDialog(null, "Message exceeds 250 characters. Please shorten it.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+
+                    // Generate ID and hash
+                    String messageID = UUID.randomUUID().toString().substring(0, 10);
+                    String[] words = message.split(" ");
+                    String messageHash = "00:" + message.length() + ":" + (words.length > 0 ? words[0] : "") + ":" + (words.length > 1 ? words[words.length - 1] : "");
+
+                    // Choose action
+                    Object[] options = {"Send", "Discard", "Store"};
+                    int choice = JOptionPane.showOptionDialog(null, "Choose an action for the message:", "Message Action",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                    if (choice == 0) {
+                        JOptionPane.showMessageDialog(null, "Message successfully sent!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        messageCount++;
+                    } else if (choice == 1) {
+                        JOptionPane.showMessageDialog(null, "Message discarded.", "Discarded", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Message stored for later.", "Stored", JOptionPane.INFORMATION_MESSAGE);
+                        messageCount++;
+                    }
+
+                    // Add to summary
+                    summary.append("Msg ID: ").append(messageID)
+                            .append("\nHash: ").append(messageHash)
+                            .append("\nRecipient: ").append(recipient)
+                            .append("\nMessage: ").append(message)
+                            .append("\n-----------------\n");
+                }
+
+                // Show summary
+                summary.append("Total messages sent/stored: ").append(messageCount);
+                JOptionPane.showMessageDialog(null, summary.toString(), "Summary", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
 
         // Exit message
-        System.out.println("----------------------------------");
-        System.out.println("Thank you for using our system. GOODBYE!");
-        System.out.println("----------------------------------");
-
-        scanner.close(); // Close the scanner
+        JOptionPane.showMessageDialog(null, "Thank you for using our system. GOODBYE!", "Exit", JOptionPane.INFORMATION_MESSAGE);
     }
-}
+}  
+ 
